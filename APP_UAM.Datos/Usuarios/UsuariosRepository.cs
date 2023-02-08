@@ -30,5 +30,23 @@ namespace APP_UAM.Repository.Usuarios
                 return new List<Usuario>();
             }
         }
+        public async Task<Usuario> GetUsuarioLogin(string correo)
+        {
+            try
+            {
+                object parameters = new { Correo = correo };
+                string Query = "SELECT IdUsuario, Nombres, Apellidos, Correo, Clave, FechaRegistro Nombres FROM USUARIOS WHERE Correo = @Correo;";
+                string stringConnection = Conexion.GetConnection();
+                using (SqlConnection ctx = new SqlConnection(stringConnection))
+                {
+                    IEnumerable<Usuario> result = await ctx.QueryAsync<Usuario>(Query, parameters);
+                    return result.FirstOrDefault();
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
     }
 }

@@ -1,10 +1,22 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using System.Data.SqlClient;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(m =>
+    {
+        m.LoginPath = new Microsoft.AspNetCore.Http.PathString("/");
+        m.Cookie.Name = "FullName";
+    });
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -21,10 +33,18 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
+
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
 
+app.MapControllerRoute(
+    name: "Default",
+    pattern: "{controller}/{action}/{id?}",
+    defaults: new { controller = "Login", action = "Index" }
+);
 app.Run();

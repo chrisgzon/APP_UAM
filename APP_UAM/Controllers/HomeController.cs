@@ -1,11 +1,13 @@
 ﻿using APP_UAM.Entities.Usuario;
 using APP_UAM.Logic.Usuarios;
 using APP_UAM.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace APP_UAM.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
